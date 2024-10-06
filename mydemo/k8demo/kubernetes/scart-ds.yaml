@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scart-deployment
+  labels:
+    app: scart
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scart
+  template:
+    metadata:
+      labels:
+        app: scart
+    spec:
+      containers:
+      - name: node
+        image: node:latest
+        ports:
+        - containerPort: 8081
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scart-service
+spec:
+  selector:
+    app: scart
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081

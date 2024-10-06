@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scart-deployment
+  labels:
+    app: scart
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scart
+  template:
+    metadata:
+      labels:
+        app: scart
+    spec:
+      containers:
+      - name: scart
+        image: sudeeparyan/s-cart:latest
+        ports:
+        - containerPort: 3000
+        env:
+          - name: DB_URL
+            valueFrom: 
+              configMapKeyRef:
+                name: scart-config
+                key: scart-url
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scart-service
+spec:
+  type: NodePort
+  selector:
+    app: scart
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 31000
